@@ -1,4 +1,4 @@
-export const StarIcon = () => {
+const StarIcon = () => {
   return (
     <svg
       width="26"
@@ -17,3 +17,5 @@ export const StarIcon = () => {
     </svg>
   );
 };
+
+export default StarIcon

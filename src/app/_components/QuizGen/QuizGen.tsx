@@ -1,6 +1,6 @@
 "use client";
 
-import { StarIcon } from "@/app/_icons/StarIcon";
+import  StarIcon  from "@/app/_icons/StarIcon";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
