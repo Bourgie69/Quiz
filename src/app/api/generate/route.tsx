@@ -6,6 +6,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_TOKEN });
 
 export const POST = async (request: NextRequest) => {
   try {
+    console.log(GEMINI_TOKEN)
     const { prompt } = await request.json();
 
     const contents = [

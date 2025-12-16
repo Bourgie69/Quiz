@@ -81,7 +81,7 @@ const QuizGen = () => {
     });
     const quizJSON = await quizResponse.json();
 
-    const cleanedQuiz: Quiz = quizJSON.text.replace(/```json|```/g, "").trim();
+    const cleanedQuiz: Quiz = quizJSON?.text.replace(/```json|```/g, "").trim();
 
     setQuiz(cleanedQuiz);
     console.log(quiz);
