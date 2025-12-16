@@ -20,7 +20,7 @@ const QuizGen = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const [isSummarized, setIsSummarized] = useState(2);
+  const [isSummarized, setIsSummarized] = useState(0);
   const [geminiResponse, setGeminiResponse] = useState("");
   const [quiz, setQuiz] = useState({});
 
@@ -84,7 +84,7 @@ const QuizGen = () => {
     const cleanedQuiz: Quiz = quizJSON.text.replace(/```json|```/g, "").trim();
 
     setQuiz(cleanedQuiz);
-    console.log(cleanedQuiz);
+    console.log(quiz);
   };
 
   return (
@@ -174,9 +174,8 @@ const QuizGen = () => {
           <p className=" text-gray-500">Take a quick test about your knowledge from your content </p>
 
           <div className="bg-white w-full h-10 mx-auto">
-          { }
           </div>
-
+          {Object.keys(quiz).map((key) => (<p key={key}>{key}</p>))}
         </div>
       )}
     </>
