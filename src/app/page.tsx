@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div>
       <Nav />
-      <div className="flex">
+      <div className="flex bg-gray-50">
         <SideBar />
         <QuizGen />
       </div>
