@@ -1,3 +1,4 @@
+import prisma from "@/lib/prisma"
 
 
 export const POST = async (req: Request) => {

@@ -11,6 +11,6 @@ export default defineConfig({
   },
   engine: "classic",
   datasource: {
-    url: env("SUPABASE_URL"),
+    url: env("DATABASE_URL"),
   },
 });

@@ -3,13 +3,13 @@
 import StarIcon from "@/app/_icons/StarIcon";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import SummarizedContent from "./SummarizedContent";
+import SummaryIcon from "@/app/_icons/SummaryIcon";
 
 const QuizGen = () => {
   const [title, setTitle] = useState("");
   const [article, setArticle] = useState("");
   const [isSummarized, setIsSummarized] = useState(false);
-  const [response, setResponse] = useState("");
+  const [geminiResponse, setGeminiResponse] = useState("");
 
   const handleSend = async () => {
     const userMessage = article.trim();
@@ -23,7 +23,22 @@ const QuizGen = () => {
 
     const data = await response.json();
 
-    setResponse(data.text);
+    setGeminiResponse(data.text);
+    console.log(data);
+  };
+
+  const postArticle = async () => {
+    const response = await fetch("api/articles", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: title,
+        content: article,
+        summary: geminiResponse,
+      }),
+    });
+
+    const data = await response.json();
     console.log(data);
   };
 
@@ -34,11 +49,14 @@ const QuizGen = () => {
         <p>Article Quiz Generator</p>
       </div>
       {isSummarized ? (
-        <SummarizedContent
-          title={title}
-          article={article}
-          response={response}
-        />
+        <div>
+          <div className="flex items-center gap-2">
+            <SummaryIcon />
+            <p className="text-sm text-gray-500">Summarized content</p>
+          </div>
+          <p className="text-2xl font-bold">{title}</p>
+          <p>{geminiResponse}</p>
+        </div>
       ) : (
         <div>
           <p>
@@ -78,7 +96,7 @@ const QuizGen = () => {
           </Button>
         </span>
         {isSummarized ? (
-          <Button>Generate quiz</Button>
+          <Button onClick={postArticle}>Generate quiz</Button>
         ) : (
           <Button
             className="w-fit"
