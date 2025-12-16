@@ -14,16 +14,21 @@ const QuizGen = () => {
 
   const [isSummarized, setIsSummarized] = useState(false);
   const [geminiResponse, setGeminiResponse] = useState("");
+  const [quiz, setquiz] = useState({});
 
   const handleSend = async () => {
     const userMessage = article.trim();
     setIsSummarized(true);
+
+    if (geminiResponse && loading) return;
     setLoading(true);
 
-    const response = await fetch("/api/article-summary", {
+    const response = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: userMessage }),
+      body: JSON.stringify({
+        prompt: `Please provide a concise summary of the following article: ${userMessage}`,
+      }),
     });
 
     const data = await response.json();
@@ -34,18 +39,36 @@ const QuizGen = () => {
   };
 
   const postArticle = async () => {
-    const response = await fetch("api/articles", {
+    // const response = await fetch("api/articles", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     title: title,
+    //     content: article,
+    //     summary: geminiResponse,
+    //   }),
+    // });
+
+    // const data = await response.json();
+    // console.log(data);
+
+    const quizResponse = await fetch("api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        title: title,
-        content: article,
-        summary: geminiResponse,
+        prompt: `Generate 5 multiple choice questions based on this article: ${geminiResponse}. Return the response in this exact JSON format:
+      [
+        {
+          "question": "Question text here",
+          "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
+          "answer": "0"
+        }
+      ]
+      Make sure the response is valid JSON and the answer is the index (0-3) of the correct option.`,
       }),
     });
-
-    const data = await response.json();
-    console.log(data);
+    const quizJSON = await quizResponse.json();
+    console.log(quizJSON);
   };
 
   return (
@@ -108,7 +131,9 @@ const QuizGen = () => {
           </Button>
         </span>
         {isSummarized ? (
-          <Button onClick={postArticle}>Generate quiz</Button>
+          <Button onClick={postArticle} disabled={!geminiResponse}>
+            Generate quiz
+          </Button>
         ) : (
           <Button
             className="w-fit"
