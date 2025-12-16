@@ -4,16 +4,21 @@ import StarIcon from "@/app/_icons/StarIcon";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import SummaryIcon from "@/app/_icons/SummaryIcon";
+import { Spinner } from "@/components/ui/spinner";
 
 const QuizGen = () => {
   const [title, setTitle] = useState("");
   const [article, setArticle] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
   const [isSummarized, setIsSummarized] = useState(false);
   const [geminiResponse, setGeminiResponse] = useState("");
 
   const handleSend = async () => {
     const userMessage = article.trim();
     setIsSummarized(true);
+    setLoading(true);
 
     const response = await fetch("/api/article-summary", {
       method: "POST",
@@ -24,6 +29,7 @@ const QuizGen = () => {
     const data = await response.json();
 
     setGeminiResponse(data.text);
+    setLoading(false);
     console.log(data);
   };
 
@@ -55,13 +61,19 @@ const QuizGen = () => {
             <p className="text-sm text-gray-500">Summarized content</p>
           </div>
           <p className="text-2xl font-bold">{title}</p>
+          {loading && (
+            <div className="flex items-center gap-2">
+              <p className="text-gray-500">Generating Summary</p>
+              <Spinner />
+            </div>
+          )}
           <p>{geminiResponse}</p>
         </div>
       ) : (
         <div>
           <p>
             Paste your article below to generate a summarize and quiz question.
-            Your articles will saved in the sidebar for future reference.
+            Your articles will be saved in the sidebar for future reference.
           </p>
 
           <div>
