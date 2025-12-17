@@ -6,13 +6,11 @@ import { useState } from "react";
 import SummaryIcon from "@/app/_icons/SummaryIcon";
 import { Spinner } from "@/components/ui/spinner";
 
-type Quiz = [
-  {
-    question: String;
-    options: String[];
-    answer: String;
-  }
-];
+type Quiz = {
+  question: string;
+  options: string[];
+  answer: string;
+}[];
 
 const QuizGen = () => {
   const [title, setTitle] = useState("");
@@ -22,9 +20,9 @@ const QuizGen = () => {
 
   const [isSummarized, setIsSummarized] = useState(0);
   const [geminiResponse, setGeminiResponse] = useState("");
-  const [quiz, setQuiz] = useState({});
+  const [quiz, setQuiz] = useState([]);
 
-  const [quizQuestion, setQuizQuestion] = useState(0)
+  const [quizQuestion, setQuizQuestion] = useState(0);
 
   const handleSend = async () => {
     const userMessage = article.trim();
@@ -81,10 +79,9 @@ const QuizGen = () => {
     });
     const quizJSON = await quizResponse.json();
 
-    const cleanedQuiz: Quiz = quizJSON?.text.replace(/```json|```/g, "").trim();
+    const cleanedQuiz = (quizJSON?.text|| "").replace(/```json|```/g, "").trim();
 
-    setQuiz(cleanedQuiz);
-    console.log(quiz);
+    setQuiz(JSON.parse(cleanedQuiz));
   };
 
   return (
@@ -171,11 +168,31 @@ const QuizGen = () => {
             <StarIcon />
             <p className="text-lg font-bold">Quick test</p>
           </div>
-          <p className=" text-gray-500">Take a quick test about your knowledge from your content </p>
+          <p className=" text-gray-500">
+            Take a quick test about your knowledge from your content{" "}
+          </p>
 
-          <div className="bg-white w-full h-10 mx-auto">
-          </div>
-          {Object.keys(quiz).map((key) => (<p key={key}>{key}</p>))}
+          <div className="bg-white w-full h-10 mx-auto"></div>
+          {quiz.map((q, index) => (
+            <div key={index}>
+              <p className="font-bold">{q.question}</p>
+              {q.options.map((opt, i) => (
+                <p key={i}>
+                  {i}. {opt}
+                </p>
+              ))}
+            </div>
+          ))}
+          {quiz.map((q, index) => (
+            <div key={index}>
+              <p className="font-bold">{q.question}</p>
+              {q.options.map((opt, i) => (
+                <p key={i}>
+                  {i}. {opt}
+                </p>
+              ))}
+            </div>
+          ))}
         </div>
       )}
     </>

@@ -21,19 +21,8 @@ export const POST = async (request: NextRequest) => {
       contents,
     });
 
-    let responseText = "";
-    if (response.text) {
-      responseText = response.text;
-    } else if (
-      response.candidates &&
-      response.candidates[0].content?.parts?.[0].text
-    ) {
-      responseText = response.candidates[0].content.parts[0].text;
-    } else {
-      responseText = JSON.stringify(response);
-    }
 
-    return NextResponse.json({ text: responseText }, { status: 200 });
+    return NextResponse.json({ text: response.text }, { status: 200 });
   } catch (err) {
     return NextResponse.json({ err }, { status: 400 });
   }
