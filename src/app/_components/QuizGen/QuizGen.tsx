@@ -20,7 +20,7 @@ const QuizGen = () => {
 
   const [isSummarized, setIsSummarized] = useState(0);
   const [geminiResponse, setGeminiResponse] = useState("");
-  const [quiz, setQuiz] = useState([]);
+  const [quiz, setQuiz] = useState({});
 
   const [quizQuestion, setQuizQuestion] = useState(0);
 
@@ -81,7 +81,12 @@ const QuizGen = () => {
 
     const cleanedQuiz = (quizJSON?.text|| "").replace(/```json|```/g, "").trim();
 
-    setQuiz(JSON.parse(cleanedQuiz));
+    const JSONquiz = JSON.parse(cleanedQuiz)
+
+    setQuiz(JSONquiz);
+
+    console.log(typeof JSONquiz, JSONquiz)
+
   };
 
   return (
@@ -173,7 +178,7 @@ const QuizGen = () => {
           </p>
 
           <div className="bg-white w-full h-10 mx-auto"></div>
-          {quiz.map((q, index) => (
+          {/* {quiz.map((q, index) => (
             <div key={index}>
               <p className="font-bold">{q.question}</p>
               {q.options.map((opt, i) => (
@@ -192,7 +197,7 @@ const QuizGen = () => {
                 </p>
               ))}
             </div>
-          ))}
+          ))} */}
         </div>
       )}
     </>

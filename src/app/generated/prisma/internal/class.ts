@@ -23,7 +23,7 @@ const config: runtime.GetPrismaClientConfig = {
       "value": "prisma-client"
     },
     "output": {
-      "value": "/Users/25LP4789/Desktop/Quiz/quiz/src/app/generated/prisma",
+      "value": "C:\\Users\\Batzorig\\Desktop\\Projects\\NEXT JS\\Academy\\Quiz\\src\\app\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -32,7 +32,7 @@ const config: runtime.GetPrismaClientConfig = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "darwin-arm64",
+        "value": "windows",
         "native": true
       },
       {
@@ -45,7 +45,7 @@ const config: runtime.GetPrismaClientConfig = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/25LP4789/Desktop/Quiz/quiz/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Users\\Batzorig\\Desktop\\Projects\\NEXT JS\\Academy\\Quiz\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativePath": "../../../../prisma",
