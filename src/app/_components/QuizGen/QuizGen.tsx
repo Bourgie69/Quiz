@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import SummaryIcon from "@/app/_icons/SummaryIcon";
 import { Spinner } from "@/components/ui/spinner";
+import { raw } from "@prisma/client/runtime/library";
 
 type Quiz = {
   question: string;
@@ -62,7 +63,7 @@ const QuizGen = () => {
     // const data = await response.json();
     // console.log(data);
 
-    const quizResponse = await fetch("api/generate", {
+    const quizResponse = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -79,14 +80,15 @@ const QuizGen = () => {
     });
     const quizJSON = await quizResponse.json();
 
-    const cleanedQuiz = (quizJSON?.text|| "").replace(/```json|```/g, "").trim();
+    const rawQuiz = quizJSON.text.match(/\[[\s\S]*\]/);
 
-    const JSONquiz = JSON.parse(cleanedQuiz)
+    if (!rawQuiz) {
+      throw new Error("No JSON");
+    }
+    const parsedQuiz = JSON.parse(rawQuiz[0]);
 
-    setQuiz(JSONquiz);
-
-    console.log(typeof JSONquiz, JSONquiz)
-
+    console.log(typeof parsedQuiz, parsedQuiz);
+    setQuiz(parsedQuiz);
   };
 
   return (
