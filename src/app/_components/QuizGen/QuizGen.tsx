@@ -98,10 +98,10 @@ const QuizGen = () => {
   const handleAnswer = (index) => {
     setQuestionAnswer(index);
     if (questionAnswer == geminiResponse.quiz[quizQuestion].answer) {
-      setRightAnswers(prev => prev + 1);
+      setRightAnswers((prev) => prev + 1);
     }
     setQuizQuestion(quizQuestion < 4 ? quizQuestion + 1 : 0);
-    console.log(rightAnswers)
+    console.log(rightAnswers);
   };
 
   return (
@@ -196,8 +196,9 @@ const QuizGen = () => {
           </p>
 
           <div className="bg-white border rounded-2xl p-5 w-full mx-auto">
-            <div className="text-center font-semibold text-lg mb-2">
-              {geminiResponse.quiz[quizQuestion].question}
+            <div className="flex gap-5 justify-between text-center font-semibold text-lg mb-2">
+              <p>{geminiResponse.quiz[quizQuestion].question}</p>
+              <p>{quizQuestion}/5</p>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {geminiResponse.quiz[quizQuestion].options.map((item, index) => (
