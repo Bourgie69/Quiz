@@ -6,7 +6,8 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_TOKEN });
 
 export const POST = async (request: NextRequest) => {
   try {
-    console.log(GEMINI_TOKEN)
+    console.log(GEMINI_TOKEN) 
+
     const { prompt } = await request.json();
 
     const contents = [
@@ -15,6 +16,8 @@ export const POST = async (request: NextRequest) => {
         parts: [{ text: prompt }],
       },
     ];
+
+    await new Promise((r) => setTimeout(r, 500))
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",

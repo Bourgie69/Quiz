@@ -20,35 +20,17 @@ const QuizGen = () => {
   const [loading, setLoading] = useState(false);
 
   const [isSummarized, setIsSummarized] = useState(0);
-  const [geminiResponse, setGeminiResponse] = useState("");
-  const [quiz, setQuiz] = useState({});
+  const [geminiResponse, setGeminiResponse] = useState({});
 
   const [quizQuestion, setQuizQuestion] = useState(0);
 
+  const [questionAnswer, setQuestionAnswer] = useState(0);
+  const [rightAnswers, setRightAnswers] = useState(0);
+
   const handleSend = async () => {
     const userMessage = article.trim();
+
     setIsSummarized(1);
-
-    if (geminiResponse && loading) return;
-    setLoading(true);
-
-    const response = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        prompt: `Please provide a concise summary of the following article: ${userMessage}`,
-      }),
-    });
-
-    const data = await response.json();
-
-    setGeminiResponse(data.text);
-    setLoading(false);
-    console.log(data);
-  };
-
-  const postArticle = async () => {
-    setIsSummarized(2);
 
     // const response = await fetch("api/articles", {
     //   method: "POST",
@@ -63,32 +45,63 @@ const QuizGen = () => {
     // const data = await response.json();
     // console.log(data);
 
-    const quizResponse = await fetch("/api/generate", {
+    if (geminiResponse && loading) return;
+    setLoading(true);
+
+    const response = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        prompt: `Generate 5 multiple choice questions based on this article: ${geminiResponse}. Return the response in this exact JSON format:
-      [
+        prompt: `Generate 5 multiple choice questions based on this article: ${userMessage}. 
+        Then generate 5 multiple-choice questions.
+
+        Return ONLY valid JSON in this format:
         {
-          "question": "Question text here",
-          "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
-          "answer": "0"
+          "summary": "text",
+          "quiz": [
+                {
+                  "question": "Question text here",
+                  "options": ["A", "B", "C", "D"],
+                  "answer": "0"
+                }
+              ]
         }
-      ]
-      Make sure the response is valid JSON and the answer is the index (0-3) of the correct option.`,
+      Make sure the answer is the index (0-3) of the correct option.`,
       }),
     });
-    const quizJSON = await quizResponse.json();
+    setLoading(false);
 
-    const rawQuiz = quizJSON.text.match(/\[[\s\S]*\]/);
-
-    if (!rawQuiz) {
-      throw new Error("No JSON");
+    if (!response.ok) {
+      console.error("API Error", await response.json());
+      return;
     }
-    const parsedQuiz = JSON.parse(rawQuiz[0]);
 
-    console.log(typeof parsedQuiz, parsedQuiz);
-    setQuiz(parsedQuiz);
+    const data = await response.json();
+
+    console.log(data.text);
+
+    const text = data.text;
+
+    const match = text.match(/\{[\s\S]*\}/);
+
+    if (!match) {
+      throw new Error("No JSON found");
+    }
+
+    const rawJSON = JSON.parse(match[0]);
+
+    console.log(rawJSON);
+
+    setGeminiResponse(rawJSON);
+  };
+
+  const handleAnswer = (index) => {
+    setQuestionAnswer(index);
+    if (questionAnswer == geminiResponse.quiz[quizQuestion].answer) {
+      setRightAnswers(prev => prev + 1);
+    }
+    setQuizQuestion(quizQuestion < 4 ? quizQuestion + 1 : 0);
+    console.log(rightAnswers)
   };
 
   return (
@@ -113,7 +126,7 @@ const QuizGen = () => {
                   <Spinner />
                 </div>
               )}
-              <p>{geminiResponse}</p>
+              <p>{geminiResponse.summary}</p>
             </div>
           ) : (
             <div>
@@ -155,7 +168,10 @@ const QuizGen = () => {
               </Button>
             </span>
             {isSummarized == 1 ? (
-              <Button onClick={postArticle} disabled={!geminiResponse}>
+              <Button
+                onClick={() => setIsSummarized(2)}
+                disabled={!geminiResponse}
+              >
                 Generate quiz
               </Button>
             ) : (
@@ -170,7 +186,7 @@ const QuizGen = () => {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col gap-3 mt-20 border mx-auto p-5 h-fit w-[800]">
+        <div className="flex flex-col gap-3 mt-20  mx-auto p-5 h-fit w-[800]">
           <div className="flex items-center gap-1">
             <StarIcon />
             <p className="text-lg font-bold">Quick test</p>
@@ -179,27 +195,22 @@ const QuizGen = () => {
             Take a quick test about your knowledge from your content{" "}
           </p>
 
-          <div className="bg-white w-full h-10 mx-auto"></div>
-          {/* {quiz.map((q, index) => (
-            <div key={index}>
-              <p className="font-bold">{q.question}</p>
-              {q.options.map((opt, i) => (
-                <p key={i}>
-                  {i}. {opt}
-                </p>
+          <div className="bg-white border rounded-2xl p-5 w-full mx-auto">
+            <div className="text-center font-semibold text-lg mb-2">
+              {geminiResponse.quiz[quizQuestion].question}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {geminiResponse.quiz[quizQuestion].options.map((item, index) => (
+                <Button
+                  onClick={() => handleAnswer(index)}
+                  key={item.index}
+                  className="border flex justify-center items-center text-center p-2 h-20 rounded-lg text-black bg-white overflow-x-auto"
+                >
+                  {item}
+                </Button>
               ))}
             </div>
-          ))}
-          {quiz.map((q, index) => (
-            <div key={index}>
-              <p className="font-bold">{q.question}</p>
-              {q.options.map((opt, i) => (
-                <p key={i}>
-                  {i}. {opt}
-                </p>
-              ))}
-            </div>
-          ))} */}
+          </div>
         </div>
       )}
     </>
