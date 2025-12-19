@@ -303,7 +303,7 @@ const QuizGen = () => {
               / 5
             </p>
 
-            <div>
+            <div className="flex flex-col gap-5 mt-5">
               {geminiResponse.quiz.map((item, index) => (
                 <div key={index} className="flex gap-2">
                   {yourAnswers[index] == rightAnswers[index] ? (

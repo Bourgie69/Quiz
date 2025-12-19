@@ -5,7 +5,7 @@ import SideBar from "./_components/Sidebar/SideBar";
 export default function Home() {
   return (
     <div>
-      <Nav />
+      {/* <Nav/> */}
       <div className="flex bg-gray-50">
         <SideBar />
         <QuizGen />
