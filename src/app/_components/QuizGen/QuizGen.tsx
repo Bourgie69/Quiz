@@ -6,6 +6,8 @@ import { useState } from "react";
 import SummaryIcon from "@/app/_icons/SummaryIcon";
 import { Spinner } from "@/components/ui/spinner";
 import { raw } from "@prisma/client/runtime/library";
+import CorrectIcon from "@/app/_icons/CorrectIcon";
+import IncorrectIcon from "@/app/_icons/IncorrectIcon";
 
 type Quiz = {
   question: string;
@@ -21,64 +23,73 @@ const QuizGen = () => {
 
   const [isSummarized, setIsSummarized] = useState(2);
   const [geminiResponse, setGeminiResponse] = useState({
-  "summary": "The article critiques League of Legends for its current staleness, attributing it primarily to \"feature creep\" in roles like the jungle, which overburdens players with too many permanent responsibilities, and a lack of meaningful item changes. The author contrasts LoL's approach with Teamfight Tactics, which successfully rotates features seasonally, arguing that LoL's features are added with the intention of permanence, contributing to complexity and an unengaging meta. The author dismisses Riot's justification of slow change to protect new players, contending it alienates the active player base. The proposed solution is for League of Legends to adopt TFT's seasonal rotation philosophy for both features and items, allowing for fresh gameplay dynamics and making permanence conditional on a feature's long-term health for the game.",
-  "quiz": [
-    {
-      "question": "According to the article, what is \"feature creep\" in the context of League of Legends?",
-      "options": [
-        "When the game's graphics become outdated due to constant updates.",
-        "The continuous addition of features that slowly make the game too complex and pressure gameplay.",
-        "A bug that causes champions to move slowly across the map.",
-        "The increasing number of playable champions in the game."
-      ],
-      "answer": 1
-    },
-    {
-      "question": "The author states that the \"amount of responsibility\" in the jungle role is \"simply not fun.\" What specific element does the author suggest is *not* the primary cause of players dropping the role?",
-      "options": [
-        "Keeping an eye on the state of 3 lanes.",
-        "Calculating which objective to play for.",
-        "The fear of miscalculating and causing the team to fall behind.",
-        "Camp management."
-      ],
-      "answer": 3
-    },
-    {
-      "question": "How does the article contrast Riot's approach to new features in Teamfight Tactics (TFT) compared to League of Legends (LoL)?",
-      "options": [
-        "TFT features are more complex, while LoL features are simpler.",
-        "TFT features are designed to be permanent additions from the start, unlike LoL.",
-        "TFT features are introduced with the intention of being rotated out after a set, while LoL features tend to be permanent.",
-        "TFT focuses solely on balance changes, not new features, whereas LoL frequently adds new content."
-      ],
-      "answer": 2
-    },
-    {
-      "question": "What reason did Riot's Phroxzon give for not implementing large game shakeups outside of season starts?",
-      "options": [
-        "Active players prefer a consistent meta.",
-        "Developers lack the resources for frequent major updates.",
-        "A high rate of change is particularly damaging to new and reviving players.",
-        "Esports events require a stable game environment."
-      ],
-      "answer": 2
-    },
-    {
-      "question": "What is the author's primary proposed solution to combat the staleness in League of Legends?",
-      "options": [
-        "Revert all recent feature additions to simplify the game.",
-        "Introduce a new role to distribute jungle responsibility.",
-        "Adopt Teamfight Tactics' philosophy of rotating features and items seasonally.",
-        "Buff underperforming champions and nerf overpowered ones more frequently."
-      ],
-      "answer": 2
-    }
-  ]
-});
+    summary:
+      "The article critiques League of Legends for its current staleness, attributing it primarily to \"feature creep\" in roles like the jungle, which overburdens players with too many permanent responsibilities, and a lack of meaningful item changes. The author contrasts LoL's approach with Teamfight Tactics, which successfully rotates features seasonally, arguing that LoL's features are added with the intention of permanence, contributing to complexity and an unengaging meta. The author dismisses Riot's justification of slow change to protect new players, contending it alienates the active player base. The proposed solution is for League of Legends to adopt TFT's seasonal rotation philosophy for both features and items, allowing for fresh gameplay dynamics and making permanence conditional on a feature's long-term health for the game.",
+    quiz: [
+      {
+        question:
+          'According to the article, what is "feature creep" in the context of League of Legends?',
+        options: [
+          "When the game's graphics become outdated due to constant updates.",
+          "The continuous addition of features that slowly make the game too complex and pressure gameplay.",
+          "A bug that causes champions to move slowly across the map.",
+          "The increasing number of playable champions in the game.",
+        ],
+        answer: 1,
+      },
+      {
+        question:
+          'The author states that the "amount of responsibility" in the jungle role is "simply not fun." What specific element does the author suggest is *not* the primary cause of players dropping the role?',
+        options: [
+          "Keeping an eye on the state of 3 lanes.",
+          "Calculating which objective to play for.",
+          "The fear of miscalculating and causing the team to fall behind.",
+          "Camp management.",
+        ],
+        answer: 3,
+      },
+      {
+        question:
+          "How does the article contrast Riot's approach to new features in Teamfight Tactics (TFT) compared to League of Legends (LoL)?",
+        options: [
+          "TFT features are more complex, while LoL features are simpler.",
+          "TFT features are designed to be permanent additions from the start, unlike LoL.",
+          "TFT features are introduced with the intention of being rotated out after a set, while LoL features tend to be permanent.",
+          "TFT focuses solely on balance changes, not new features, whereas LoL frequently adds new content.",
+        ],
+        answer: 2,
+      },
+      {
+        question:
+          "What reason did Riot's Phroxzon give for not implementing large game shakeups outside of season starts?",
+        options: [
+          "Active players prefer a consistent meta.",
+          "Developers lack the resources for frequent major updates.",
+          "A high rate of change is particularly damaging to new and reviving players.",
+          "Esports events require a stable game environment.",
+        ],
+        answer: 2,
+      },
+      {
+        question:
+          "What is the author's primary proposed solution to combat the staleness in League of Legends?",
+        options: [
+          "Revert all recent feature additions to simplify the game.",
+          "Introduce a new role to distribute jungle responsibility.",
+          "Adopt Teamfight Tactics' philosophy of rotating features and items seasonally.",
+          "Buff underperforming champions and nerf overpowered ones more frequently.",
+        ],
+        answer: 2,
+      },
+    ],
+  });
 
   const [quizQuestion, setQuizQuestion] = useState(0);
 
-  const [rightAnswers, setRightAnswers] = useState(0);
+  const [tally, setTally] = useState(0);
+
+  const [rightAnswers, setRightAnswers] = useState([0, 0, 0, 0, 0]);
+  const [yourAnswers, setYourAnswers] = useState([0, 0, 0, 0, 0]);
 
   const handleSend = async () => {
     const userMessage = article.trim();
@@ -148,13 +159,24 @@ const QuizGen = () => {
     setGeminiResponse(rawJSON);
   };
 
-  const handleAnswer = (index) => {
-    if (index == geminiResponse.quiz[quizQuestion].answer) {
-      setRightAnswers((prev) => prev + 1);
+  const handleAnswer = (index: number) => {
+    const correct = geminiResponse.quiz[quizQuestion].answer;
+    if (index == correct) {
+      setTally((prev) => prev + 1);
     }
     setQuizQuestion(quizQuestion < 5 ? quizQuestion + 1 : 0);
-    console.log(geminiResponse.quiz[quizQuestion].answer);
-    console.log(index)
+
+    setYourAnswers((prev) => {
+      const next = [...prev];
+      next[quizQuestion] = index;
+      return next;
+    });
+
+    setRightAnswers((prev) => {
+      const next = [...prev];
+      next[quizQuestion] = correct;
+      return next;
+    });
   };
 
   return (
@@ -257,7 +279,7 @@ const QuizGen = () => {
               {geminiResponse.quiz[quizQuestion].options.map((item, index) => (
                 <p
                   onClick={() => handleAnswer(index)}
-                  key={item.index}
+                  key={index}
                   className="border flex justify-center items-center text-center p-2 h-20 rounded-lg text-black bg-white overflow-x-auto cursor-pointer"
                 >
                   {item}
@@ -274,14 +296,52 @@ const QuizGen = () => {
           </div>
           <p className=" text-gray-500">Let's see how you did! </p>
           <div className="w-100 bg-white border border-violet-500 rounded-lg p-2">
-            <p><span className="text-2xl font-semibold">Your Score : {rightAnswers}</span> / 5</p>
-          
-            <div className="flex justify-end">
-              <Button onClick={() => {setQuizQuestion(0);
-                setRightAnswers(0)
-              }}>Restart quiz</Button>
-            </div>
+            <p>
+              <span className="text-2xl font-semibold">
+                Your Score : {tally}
+              </span>{" "}
+              / 5
+            </p>
 
+            <div>
+              {geminiResponse.quiz.map((item, index) => (
+                <div key={index} className="flex gap-2">
+                  {yourAnswers[index] == rightAnswers[index] ? (
+                    <div className="w-10 h-10">
+                      <CorrectIcon />
+                    </div>
+                  ) : (
+                    <div className="w-10 h-10">
+                      <IncorrectIcon />
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-sm text-gray-500">
+                      {index + 1}. {item.question}
+                    </p>
+
+                    <p className="text-xs">
+                      Your answer: {item.options[yourAnswers[index]]}
+                    </p>
+                    {yourAnswers[index] != rightAnswers[index] && (
+                      <p className="text-xs text-green-500">
+                        Correct : {item.options[rightAnswers[index]]}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end">
+              <Button
+                onClick={() => {
+                  setQuizQuestion(0);
+                  setTally(0);
+                }}
+              >
+                Restart quiz
+              </Button>
+            </div>
           </div>
         </div>
       )}
