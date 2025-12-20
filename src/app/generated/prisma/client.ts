@@ -41,15 +41,25 @@ export { Prisma }
 
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node")
-path.join(process.cwd(), "src/app/generated/prisma/libquery_engine-darwin-arm64.dylib.node")
-
-// file annotations for bundling tools to include these files
 path.join(__dirname, "query_engine-windows.dll.node")
 path.join(process.cwd(), "src/app/generated/prisma/query_engine-windows.dll.node")
+
+// file annotations for bundling tools to include these files
+path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node")
+path.join(process.cwd(), "src/app/generated/prisma/libquery_engine-darwin-arm64.dylib.node")
 
 /**
  * Model Article
  * 
  */
 export type Article = Prisma.ArticleModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel
+/**
+ * Model Quiz
+ * 
+ */
+export type Quiz = Prisma.QuizModel
