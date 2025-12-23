@@ -31,12 +31,12 @@ model Article {
 
 
 model User {
-  id    String     @id @default(cuid())
+  id    String     @id 
   email String  @unique
   name  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-  articles Article[]
+  articles Article[] 
   // quizAttempts QuizAttempt[]
   // userScores UserScores[]
 }
@@ -44,7 +44,7 @@ model User {
 
 model Quiz {
   id String @id @unique @default(cuid())
-  quetion String
+  question String
   option String[]
   answer String
   articleId String

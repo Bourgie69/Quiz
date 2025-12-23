@@ -96,7 +96,7 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const QuizScalarFieldEnum = {
   id: 'id',
-  quetion: 'quetion',
+  question: 'question',
   option: 'option',
   answer: 'answer',
   articleId: 'articleId',

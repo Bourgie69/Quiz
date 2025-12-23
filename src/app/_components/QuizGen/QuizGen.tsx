@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import SummaryIcon from "@/app/_icons/SummaryIcon";
 import { Spinner } from "@/components/ui/spinner";
-import { raw } from "@prisma/client/runtime/library";
 import CorrectIcon from "@/app/_icons/CorrectIcon";
 import IncorrectIcon from "@/app/_icons/IncorrectIcon";
+import RestartIcon from "@/app/_icons/RestartIcon";
+import SaveIcon from "@/app/_icons/SaveIcon";
 
 type Quiz = {
   question: string;
@@ -332,14 +333,21 @@ const QuizGen = () => {
                 </div>
               ))}
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-between mt-2">
               <Button
+                variant="outline"
                 onClick={() => {
                   setQuizQuestion(0);
                   setTally(0);
                 }}
               >
+                <RestartIcon />
                 Restart quiz
+              </Button>
+              
+              <Button>
+                <SaveIcon />
+                Save and Leave
               </Button>
             </div>
           </div>
