@@ -1,8 +1,11 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 
-export async function POST(req: Request) {
-    const { userId } = auth();
+export const POST = async () => {
+
+    console.log('123')
+
+    const { userId } = await auth();
     if (!userId) {
         return new Response("Unauthorized", { status: 401 });
     }
