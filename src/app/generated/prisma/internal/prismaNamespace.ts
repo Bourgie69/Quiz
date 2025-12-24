@@ -688,6 +688,7 @@ export type ArticleScalarFieldEnum = (typeof ArticleScalarFieldEnum)[keyof typeo
 
 export const UserScalarFieldEnum = {
   id: 'id',
+  clerkId: 'clerkId',
   email: 'email',
   name: 'name',
   createdAt: 'createdAt',

@@ -5,56 +5,52 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/app/generated/prisma"
+  provider      = "prisma-client"
+  output        = "../src/app/generated/prisma"
   binaryTargets = ["native", "windows", "darwin-arm64"]
 }
 
 datasource db {
-  provider = "postgresql" 
-  url = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
-
-
 
 model Article {
-  id String @id @default(cuid())
-  title String 
-  content String
-  summary String
-  userId String
-  user User @relation(fields: [userId], references: [id])
-  quizzes Quiz[]
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  summary   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  quizzes   Quiz[]
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
 
-
 model User {
-  id    String     @id 
-  email String  @unique
-  name  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  articles Article[] 
+  id        String    @id
+  clerkId   String    @unique
+  email     String    @unique
+  name      String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  articles  Article[]
   // quizAttempts QuizAttempt[]
   // userScores UserScores[]
 }
 
-
 model Quiz {
-  id String @id @unique @default(cuid())
-  question String
-  option String[]
-  answer String
+  id        String   @id @unique @default(cuid())
+  question  String
+  option    String[]
+  answer    String
   articleId String
-  article Article @relation(fields: [articleId], references: [id])
+  article   Article  @relation(fields: [articleId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   // userScores UserScores[]
   // quizAttemps QuizAttempt[]
 }
-
 
 // model QuizAttempt {
 //   id String @id @unique @default(cuid())
@@ -63,7 +59,6 @@ model Quiz {
 //   quizId String
 //   quiz Quiz @relation(fields: [quizId], references: [id])
 // }
-
 
 // model UserScores {
 //   id String @id @unique @default(cuid())
