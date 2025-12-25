@@ -67,8 +67,6 @@ const Article = () => {
 
   return (
     <div className="flex">
-      <SideBar />
-
       <div className="px-2">
         {articleLoading && <p>Loading Content</p>}
         <p className="text-2xl font-bold">{articleContent?.title}</p>

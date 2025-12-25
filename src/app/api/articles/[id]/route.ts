@@ -1,13 +1,12 @@
 import prisma from "@/lib/prisma"
 
 
-export const GET = async (req: Request, context: { params: { id: string } }) => {
+export const GET = async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
     try {
-        const { params } = context
-        const id = params.id
+        const resolvedParams = await params
         const article = await prisma.article.findFirst({
             where: {
-                id
+                id: resolvedParams.id
             }
         })
         return new Response(JSON.stringify({ article }), { status: 200 })
