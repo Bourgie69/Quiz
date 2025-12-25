@@ -39,7 +39,7 @@ export const POST = async (request: NextRequest) => {
 export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
     try {
 
-        const quiz = prisma.quiz.findMany({
+        const quiz = await prisma.quiz.findMany({
             where: {
                 articleId: params.id
             }
