@@ -9,6 +9,7 @@ import {
 } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Nav from "./_components/Nav/Nav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +38,7 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <header className="flex justify-between items-center border-b p-4 gap-4 h-16">
-            <p className="text-2xl font-semibold">Quiz app</p>
+            <Nav />
             <div>
               <SignedOut>
                 <SignInButton />

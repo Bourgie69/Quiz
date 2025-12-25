@@ -10,80 +10,28 @@ import IncorrectIcon from "@/app/_icons/IncorrectIcon";
 import RestartIcon from "@/app/_icons/RestartIcon";
 import SaveIcon from "@/app/_icons/SaveIcon";
 
-type Quiz = {
+type QuizSingles = {
   question: string;
   options: string[];
-  answer: string;
-}[];
+  answer: number;
+};
+
+type GeminiResponse = {
+  summary: string;
+  quiz: QuizSingles[];
+};
 
 const QuizGen = () => {
   const [title, setTitle] = useState("");
   const [article, setArticle] = useState("");
+  const [articleId, setArticleId] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
 
-  const [isSummarized, setIsSummarized] = useState(2);
-  const [geminiResponse, setGeminiResponse] = useState({
-    summary:
-      "The article critiques League of Legends for its current staleness, attributing it primarily to \"feature creep\" in roles like the jungle, which overburdens players with too many permanent responsibilities, and a lack of meaningful item changes. The author contrasts LoL's approach with Teamfight Tactics, which successfully rotates features seasonally, arguing that LoL's features are added with the intention of permanence, contributing to complexity and an unengaging meta. The author dismisses Riot's justification of slow change to protect new players, contending it alienates the active player base. The proposed solution is for League of Legends to adopt TFT's seasonal rotation philosophy for both features and items, allowing for fresh gameplay dynamics and making permanence conditional on a feature's long-term health for the game.",
-    quiz: [
-      {
-        question:
-          'According to the article, what is "feature creep" in the context of League of Legends?',
-        options: [
-          "When the game's graphics become outdated due to constant updates.",
-          "The continuous addition of features that slowly make the game too complex and pressure gameplay.",
-          "A bug that causes champions to move slowly across the map.",
-          "The increasing number of playable champions in the game.",
-        ],
-        answer: 1,
-      },
-      {
-        question:
-          'The author states that the "amount of responsibility" in the jungle role is "simply not fun." What specific element does the author suggest is *not* the primary cause of players dropping the role?',
-        options: [
-          "Keeping an eye on the state of 3 lanes.",
-          "Calculating which objective to play for.",
-          "The fear of miscalculating and causing the team to fall behind.",
-          "Camp management.",
-        ],
-        answer: 3,
-      },
-      {
-        question:
-          "How does the article contrast Riot's approach to new features in Teamfight Tactics (TFT) compared to League of Legends (LoL)?",
-        options: [
-          "TFT features are more complex, while LoL features are simpler.",
-          "TFT features are designed to be permanent additions from the start, unlike LoL.",
-          "TFT features are introduced with the intention of being rotated out after a set, while LoL features tend to be permanent.",
-          "TFT focuses solely on balance changes, not new features, whereas LoL frequently adds new content.",
-        ],
-        answer: 2,
-      },
-      {
-        question:
-          "What reason did Riot's Phroxzon give for not implementing large game shakeups outside of season starts?",
-        options: [
-          "Active players prefer a consistent meta.",
-          "Developers lack the resources for frequent major updates.",
-          "A high rate of change is particularly damaging to new and reviving players.",
-          "Esports events require a stable game environment.",
-        ],
-        answer: 2,
-      },
-      {
-        question:
-          "What is the author's primary proposed solution to combat the staleness in League of Legends?",
-        options: [
-          "Revert all recent feature additions to simplify the game.",
-          "Introduce a new role to distribute jungle responsibility.",
-          "Adopt Teamfight Tactics' philosophy of rotating features and items seasonally.",
-          "Buff underperforming champions and nerf overpowered ones more frequently.",
-        ],
-        answer: 2,
-      },
-    ],
-  });
+  const [isSummarized, setIsSummarized] = useState(0);
+  const [geminiResponse, setGeminiResponse] = useState<GeminiResponse | null>(
+    null
+  );
 
   const [quizQuestion, setQuizQuestion] = useState(0);
 
@@ -92,23 +40,10 @@ const QuizGen = () => {
   const [rightAnswers, setRightAnswers] = useState([0, 0, 0, 0, 0]);
   const [yourAnswers, setYourAnswers] = useState([0, 0, 0, 0, 0]);
 
-  const handleSend = async () => {
+  const handleSendArticle = async () => {
     const userMessage = article.trim();
 
     setIsSummarized(1);
-
-    // const response = await fetch("api/articles", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     title: title,
-    //     content: article,
-    //     summary: geminiResponse,
-    //   }),
-    // });
-
-    // const data = await response.json();
-    // console.log(data);
 
     if (geminiResponse && loading) return;
     setLoading(true);
@@ -143,8 +78,6 @@ const QuizGen = () => {
 
     const data = await response.json();
 
-    console.log(data.text);
-
     const text = data.text;
 
     const match = text.match(/\{[\s\S]*\}/);
@@ -160,8 +93,46 @@ const QuizGen = () => {
     setGeminiResponse(rawJSON);
   };
 
+  const postArticle = async () => {
+    const articleResponse = await fetch("api/articles", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: title,
+        content: article,
+        summary: geminiResponse?.summary,
+      }),
+    });
+
+    const articleData = await articleResponse.json();
+    setArticleId(articleData.articleId);
+
+    console.log(articleData);
+  };
+
+  const handleSendQuiz = async () => {
+    if (!articleId) {
+      console.log("no Article Id", articleId);
+      return;
+    }
+
+    const response = await fetch("/api/quiz", {
+      method: "POST",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({
+        quizArray: geminiResponse?.quiz,
+        articleId,
+      }),
+    });
+
+    const data = await response.json();
+
+    setTitle("");
+    setArticle("");
+  };
+
   const handleAnswer = (index: number) => {
-    const correct = geminiResponse.quiz[quizQuestion].answer;
+    const correct = geminiResponse?.quiz[quizQuestion].answer;
     if (index == correct) {
       setTally((prev) => prev + 1);
     }
@@ -202,7 +173,7 @@ const QuizGen = () => {
                   <Spinner />
                 </div>
               )}
-              <p>{geminiResponse.summary}</p>
+              <p>{geminiResponse?.summary}</p>
             </div>
           ) : (
             <div>
@@ -245,7 +216,10 @@ const QuizGen = () => {
             </span>
             {isSummarized == 1 ? (
               <Button
-                onClick={() => setIsSummarized(2)}
+                onClick={() => {
+                  setIsSummarized(2);
+                  postArticle();
+                }}
                 disabled={!geminiResponse}
               >
                 Generate quiz
@@ -254,7 +228,7 @@ const QuizGen = () => {
               <Button
                 className="w-fit"
                 disabled={!article || !title}
-                onClick={handleSend}
+                onClick={handleSendArticle}
               >
                 See summary
               </Button>
@@ -273,11 +247,11 @@ const QuizGen = () => {
 
           <div className="bg-white border rounded-2xl p-5 w-full mx-auto">
             <div className="flex gap-5 justify-between text-center font-semibold text-lg mb-2">
-              <p>{geminiResponse.quiz[quizQuestion].question}</p>
+              <p>{geminiResponse?.quiz[quizQuestion].question}</p>
               <p>{quizQuestion}/5</p>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              {geminiResponse.quiz[quizQuestion].options.map((item, index) => (
+              {geminiResponse?.quiz[quizQuestion].options.map((item, index) => (
                 <p
                   onClick={() => handleAnswer(index)}
                   key={index}
@@ -305,7 +279,7 @@ const QuizGen = () => {
             </p>
 
             <div className="flex flex-col gap-5 mt-5">
-              {geminiResponse.quiz.map((item, index) => (
+              {geminiResponse?.quiz.map((item, index) => (
                 <div key={index} className="flex gap-2">
                   {yourAnswers[index] == rightAnswers[index] ? (
                     <div className="w-10 h-10">
@@ -344,8 +318,13 @@ const QuizGen = () => {
                 <RestartIcon />
                 Restart quiz
               </Button>
-              
-              <Button>
+
+              <Button
+                onClick={() => {
+                  handleSendQuiz();
+                  setIsSummarized(0);
+                }}
+              >
                 <SaveIcon />
                 Save and Leave
               </Button>

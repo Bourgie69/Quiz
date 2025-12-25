@@ -42,8 +42,8 @@ model User {
 model Quiz {
   id        String   @id @unique @default(cuid())
   question  String
-  option    String[]
-  answer    String
+  options    String[]
+  answer    Int
   articleId String
   article   Article  @relation(fields: [articleId], references: [id])
   createdAt DateTime @default(now())

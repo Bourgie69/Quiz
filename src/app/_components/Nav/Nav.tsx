@@ -1,8 +1,15 @@
+"use client";
+import { useRouter } from "next/navigation";
+
 const Nav = () => {
+  const router = useRouter();
   return (
-    <div className="bg-white h-20 flex justify-between items-center px-5 border-b">
-      <p className="text-3xl text-black font-bold">Quiz app</p>
-    </div>
+    <button
+      onClick={() => router.push("/")}
+      className="text-2xl font-semibold cursor-pointer"
+    >
+      Quiz app
+    </button>
   );
 };
 export default Nav;

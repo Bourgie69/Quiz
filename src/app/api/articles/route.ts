@@ -1,12 +1,23 @@
 import prisma from "@/lib/prisma"
+import { auth } from "@clerk/nextjs/server"
+import { NextResponse } from "next/server"
 
 
 export const POST = async (req: Request) => {
+    const {userId} = await auth()
+    if(!userId) return new NextResponse("Unauthorized", {status: 401})
+
+    const {title, content, summary} = await req.json()
     const article = await prisma.article.create({
-        data: await req.json()
+        data: {
+            title,
+            summary,
+            content,
+            userId
+        }
     })
 
-    return new Response(JSON.stringify({article}), {status: 201})
+    return NextResponse.json({articleId: article.id})
 }
 
 

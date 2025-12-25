@@ -7,7 +7,7 @@ const SideBar = () => {
   const [openBar, setOpenBar] = useState(false);
   const [articles, setArticles] = useState([]);
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     const getArticles = async () => {
@@ -20,7 +20,7 @@ const SideBar = () => {
 
       const data = await response.json();
       setArticles(data.articles);
-      console.log(data.articles)
+      console.log(data.articles);
     };
 
     getArticles();
@@ -29,8 +29,10 @@ const SideBar = () => {
   return (
     <div className="bg-white border-r w-20 h-screen flex flex-col">
       {articles.map((article: any) => (
-        <button key={article.id} className="font-bold text-center"
-        onClick={() => router.push(`article/${article.id}`)}
+        <button
+          key={article.id}
+          className="font-bold text-center cursor-pointer my-1 border-b"
+          onClick={() => router.push(`article/${article.id}`)}
         >
           {article.title}
         </button>
