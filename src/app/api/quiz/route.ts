@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { error } from "console";
 import { NextRequest, NextResponse } from "next/server";
 
 type Quiz = {
@@ -36,18 +35,3 @@ export const POST = async (request: NextRequest) => {
 };
 
 
-export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
-    try {
-
-        const quiz = await prisma.quiz.findMany({
-            where: {
-                articleId: params.id
-            }
-        })
-
-        return new NextResponse(JSON.stringify(quiz), { status: 200 })
-
-    } catch (err) {
-        return NextResponse.json({ err }, { status: 400 })
-    }
-}

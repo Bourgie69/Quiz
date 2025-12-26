@@ -5,8 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider      = "prisma-client"
-  output        = "../src/app/generated/prisma"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "windows", "darwin-arm64"]
 }
 
@@ -42,7 +41,7 @@ model User {
 model Quiz {
   id        String   @id @unique @default(cuid())
   question  String
-  options    String[]
+  options   String[]
   answer    Int
   articleId String
   article   Article  @relation(fields: [articleId], references: [id])

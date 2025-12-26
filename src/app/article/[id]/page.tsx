@@ -72,7 +72,7 @@ const Article = () => {
         <p className="text-2xl font-bold">{articleContent?.title}</p>
         <p>{articleContent?.summary}</p>
         <div className="mt-5 border-t flex flex-col gap-10">
-          {quiz.map((q: QuizSingles) => (
+          {quiz?.map((q: QuizSingles) => (
             <p key={q.id}>{q.question}</p>
           ))}
         </div>

@@ -132,7 +132,7 @@ const QuizGen = () => {
   };
 
   const handleAnswer = (index: number) => {
-    const correct = geminiResponse?.quiz[quizQuestion].answer;
+    const correct: any = geminiResponse?.quiz[quizQuestion].answer;
     if (index == correct) {
       setTally((prev) => prev + 1);
     }
@@ -144,7 +144,7 @@ const QuizGen = () => {
       return next;
     });
 
-    setRightAnswers((prev) => {
+    setRightAnswers((prev) => {      
       const next = [...prev];
       next[quizQuestion] = correct;
       return next;
