@@ -155,9 +155,8 @@ const QuizGen = () => {
     <>
       {isSummarized != 2 ? (
         <div className="flex flex-col gap-3 mt-20 mx-auto border border-gray-500 bg-white rounded-2xl p-5 h-fit w-[800]">
-          <div className="flex items-center">
+          <div className="flex gap-2 items-center">
             <StarIcon />
-
             <p>Article Quiz Generator</p>
           </div>
           {isSummarized == 1 ? (
@@ -237,7 +236,7 @@ const QuizGen = () => {
         </div>
       ) : quizQuestion != 5 ? (
         <div className="flex flex-col gap-3 mt-20  mx-auto p-5 h-fit w-[800]">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <StarIcon />
             <p className="text-lg font-bold">Quick test</p>
           </div>
@@ -265,7 +264,7 @@ const QuizGen = () => {
         </div>
       ) : (
         <div className="mx-auto mt-20 flex flex-col gap-2">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <StarIcon />
             <p className="text-lg font-bold">Quiz completed</p>
           </div>

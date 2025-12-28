@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Encode_Sans_Semi_Expanded } from "next/font/google";
 import {
   ClerkProvider,
   SignInButton,
@@ -11,13 +12,19 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Nav from "./_components/Nav/Nav";
 
+const encodeSansSemiExpanded = Encode_Sans_Semi_Expanded({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-encode-sans-semi-expanded",
+})
+
 const geistSans = Geist({
-  variable: "--font-geist-sans",
+  variable: "--font-sans-serif",
   subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+  variable: "--font-sans-serif-mono",
   subsets: ["latin"],
 });
 
@@ -33,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" className={encodeSansSemiExpanded.variable}>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
