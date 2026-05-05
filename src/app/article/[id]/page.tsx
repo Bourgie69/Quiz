@@ -107,48 +107,53 @@ const Article = () => {
 
   return (
     <>
-      {!takeQuiz ? (
-        <div className="flex flex-col gap- mt-20 mx-auto border border-gray-500 bg-white rounded-2xl p-5 h-fit w-[800]">
-          <div className="flex flex-col gap-3">
-            <div className="flex gap-2 items-center">
-              <StarIcon />
-              <p>Article Quiz Generator</p>
-            </div>
-            <Summarized
-              loading={articleLoading}
-              summary={articleContent?.summary}
-              title={articleContent?.title}
-            />
-            <div className="flex gap-2 items-center">
-              <ArticleIcon />
-              <p className="text-sm text-gray-500">Article Content</p>
-            </div>
-            {/* <p>{articleContent?.content}</p> */}
-            <div className="flex w-full justify-between">
-              <Button onClick={() => setTakeQuiz(!takeQuiz)}>Take Quiz</Button>
+      <div className="flex">
+        <SideBar />
+
+        {!takeQuiz ? (
+          <div className="flex flex-col gap- mt-20 mx-auto border border-gray-500 bg-white rounded-2xl p-5 h-fit w-[800]">
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-2 items-center">
+                <StarIcon />
+                <p>Article Quiz Generator</p>
+              </div>
+              <Summarized
+                loading={articleLoading}
+                summary={articleContent?.summary}
+                title={articleContent?.title}
+              />
+              <div className="flex gap-2 items-center">
+                <ArticleIcon />
+                <p className="text-sm text-gray-500">Article Content</p>
+              </div>
+              {/* <p>{articleContent?.content}</p> */}
+              <div className="flex w-full justify-between">
+                <Button onClick={() => setTakeQuiz(!takeQuiz)}>Take Quiz</Button>
+              </div>
             </div>
           </div>
-        </div>
-      ) : quizQuestion != 5 ? (
-        <Quiz
-          articleQuiz={quiz}
-          handleAnswer={handleAnswer}
-          quizQuestion={quizQuestion}
-        />
-      ) : (
-        <div className="flex mx-auto">
-          <QuizResult
-            quiz={quiz}
-            yourAnswers={yourAnswers}
-            rightAnswers={rightAnswers}
-            setQuizQuestion={setQuizQuestion}
-            tally={tally}
-            setTally={setTally}
-            isOld={true}
-            handleLeave={handleLeave}
+        ) : quizQuestion != 5 ? (
+          <Quiz
+            articleQuiz={quiz}
+            handleAnswer={handleAnswer}
+            quizQuestion={quizQuestion}
           />
-        </div>
-      )}
+        ) : (
+          <div className="flex mx-auto">
+            <QuizResult
+              quiz={quiz}
+              yourAnswers={yourAnswers}
+              rightAnswers={rightAnswers}
+              setQuizQuestion={setQuizQuestion}
+              tally={tally}
+              setTally={setTally}
+              isOld={true}
+              handleLeave={handleLeave}
+            />
+          </div>
+        )}
+      </div>
+
     </>
   );
 };
